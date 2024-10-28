@@ -23,6 +23,7 @@ $app = Flight::app();
  */
 $config = require('config.php');
 
+
 // Whip out the ol' router and we'll pass that to the routes file
 $router = $app->router();
 
@@ -33,7 +34,7 @@ $router = $app->router();
  * When someone hits that URL, you point them to a function or method 
  * that will handle the request.
  */
-require('routes.php');
+require(__DIR__ . $ds . '..' . $ds . 'routes' . $ds . 'routes.php');
 /*
  * You additionally could just define the routes in this file. It's up to you.
  * Example:
@@ -58,6 +59,7 @@ require('routes.php');
  * of a services container by registering classes to the Engine class.
  */ 
 require('services.php');
+
 
 // At this point, your app should have all the instructions it needs and it'll
 // "start" processing everything. This is where the magic happens.
