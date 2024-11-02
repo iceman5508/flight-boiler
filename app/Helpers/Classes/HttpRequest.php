@@ -1,7 +1,7 @@
 <?php
 namespace App\Helpers\Classes;
 
-class Request
+class HttpRequest
 {
     /**
      * @var response:
@@ -40,7 +40,7 @@ class Request
      * @param $url: The HTTP url to check
      * @return string The data that will be returned.
      */
-    public function get($url, $data='')
+    public function get($url, array $data=[])
     {
         $url=$url.'?';
         $i=0;
@@ -69,7 +69,7 @@ class Request
      * @param $data: the data that will be sent
      * @throws Exception: sends a error if things go wrong.
      */
-    public function post($url,$data)
+    public function post($url, array $data = [])
     {
         $content = "";
 
@@ -79,11 +79,17 @@ class Request
             $content .= "{$key}={$value}&";
         }
 
-        $params = array('http' => array(
+        $request_settings = [
             'method' => 'POST',
-            'header' => $this->headers,
             'content' => $content
-        ));
+        ];
+
+        if(!empty($this->headers)){
+            $request_settings['header'] = $this->headers;
+        }
+
+
+        $params = array('http' => $request_settings);
 
         $ctx = stream_context_create($params);
         $fp = fopen($url, 'rb', false, $ctx);
@@ -104,7 +110,7 @@ class Request
      * @param $data: the data that will be sent
      * @throws Exception: sends a error if things go wrong.
      */
-    public function patch($url,$data)
+    public function patch($url, array $data = [])
     {
         $content = "";
 
@@ -114,11 +120,17 @@ class Request
             $content .= "{$key}={$value}&";
         }
 
-        $params = array('http' => array(
+        $request_settings = [
             'method' => 'PATCH',
-            'header' => $this->headers,
             'content' => $content
-        ));
+        ];
+
+        if(!empty($this->headers)){
+            $request_settings['header'] = $this->headers;
+        }
+
+        
+        $params = array('http' => $request_settings);
 
         $ctx = stream_context_create($params);
         $fp = fopen($url, 'rb', false, $ctx);
@@ -139,7 +151,7 @@ class Request
      * @param $data: the data that will be sent
      * @throws Exception: sends a error if things go wrong.
      */
-    public function put($url,$data)
+    public function put($url,array $data = [])
     {
         $content = "";
 
@@ -149,11 +161,17 @@ class Request
             $content .= "{$key}={$value}&";
         }
 
-        $params = array('http' => array(
+        $request_settings = [
             'method' => 'PUT',
-            'header' => $this->headers,
             'content' => $content
-        ));
+        ];
+
+        if(!empty($this->headers)){
+            $request_settings['header'] = $this->headers;
+        }
+
+
+        $params = array('http' => $request_settings);
 
         $ctx = stream_context_create($params);
         $fp = fopen($url, 'rb', false, $ctx);
@@ -174,7 +192,7 @@ class Request
      * @param $data: the data that will be sent
      * @throws Exception: sends a error if things go wrong.
      */
-    public function delete($url,$data)
+    public function delete($url,array $data = [])
     {
         $content = "";
 
@@ -184,11 +202,16 @@ class Request
             $content .= "{$key}={$value}&";
         }
 
-        $params = array('http' => array(
+        $request_settings = [
             'method' => 'DELETE',
-            'header' => $this->headers,
             'content' => $content
-        ));
+        ];
+
+        if(!empty($this->headers)){
+            $request_settings['header'] = $this->headers;
+        }
+        
+        $params = array('http' => $request_settings);
 
         $ctx = stream_context_create($params);
         $fp = fopen($url, 'rb', false, $ctx);
