@@ -9,6 +9,22 @@ class Request
      */
     protected $response;
 
+    /**
+     * holds the headers
+     * @var array
+     * 
+     * ex Content-Type: application/x-www-form-urlencoded
+     */
+    protected array $headers; 
+
+    /**
+     * Add a header
+     * @param string $header
+     * @return void
+     */
+    public function addHeader(string $header){
+        $this->headers[] = $header;
+    }
 
     /**
      * Response: this method returns the http response
@@ -65,7 +81,7 @@ class Request
 
         $params = array('http' => array(
             'method' => 'POST',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'header' => $this->headers,
             'content' => $content
         ));
 
@@ -100,7 +116,7 @@ class Request
 
         $params = array('http' => array(
             'method' => 'PATCH',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'header' => $this->headers,
             'content' => $content
         ));
 
@@ -135,7 +151,7 @@ class Request
 
         $params = array('http' => array(
             'method' => 'PUT',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'header' => $this->headers,
             'content' => $content
         ));
 
@@ -170,7 +186,7 @@ class Request
 
         $params = array('http' => array(
             'method' => 'DELETE',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'header' => $this->headers,
             'content' => $content
         ));
 
