@@ -10,8 +10,6 @@ namespace App\Helpers\Classes;
  */
 class Session
 {
-     public static $timed_sessions = [];
-
 
     /**
      * Start the session and check for timmed functions
@@ -19,7 +17,11 @@ class Session
      */
     public static function start(){
         session_start();
-        self::checkTimmedSessions();
+        //session_destroy();
+        //var_dump($_SESSION);
+        if(self::exists('timed_sessions')){
+             self::checkTimedSessions();
+        }
 
     }
 
@@ -27,24 +29,36 @@ class Session
      * Check the timer for timer sessions
      * @return void
      */
-    public static function checkTimmedSessions(){
-        $index = 0;
-        foreach (self::$timed_sessions as $session){
-            if(self::exists($session['name']) && self::exists($session['timer_session'])){
-                $lastActivity = self::get($session['timer_session']);
+    public static function checkTimedSessions(){
+        foreach (self::get('timed_sessions') as $session => $value){
+           
+            if(self::exists($session) ){
+                $lastActivity = $value['last_active'];
                 $currentTime = time();
                 $timeSinceLastActivity = $currentTime - $lastActivity;
 
-                if ($timeSinceLastActivity > $session['timer']) {
+                if ($timeSinceLastActivity > $value['timer']) {
                     // Session expired, destroy the session
-                    self::delete($session['name']);
-                    self::delete($session['timer_session']);
-                    unset(self::$timed_sessions[$index]);
+                    self::delete($session);
+
+                    $timmed_sessions =  self::get('timed_sessions');
+                    unset($timmed_sessions[$session]);
+
+                    self::set('timed_sessions', $timmed_sessions);
+
+
                 } else {
+                    //var_dump(self::get('timed_sessions')[$session]);
                     // Update the last activity time
-                    self::set($session['timer_sesssion'], $currentTime);
+                    $value['last_active'] = $currentTime;
+                    $timmed_sessions =  self::get('timed_sessions');
+                    $timmed_sessions[$session] = $value;
+
+                    self::set('timed_sessions', $timmed_sessions);
+                    //var_dump($timmed_sessions);
+                   // self::get('timed_sessions')[$session] = $value;
                 }
-                $index+=1;
+               
             }
         }
         
@@ -69,25 +83,33 @@ class Session
         $_SESSION[$name] = $value;
         if($timed){
             $timmed = [
-                'name' => $name,
-                'timer_session' => $name.'_timer_session'
+                'last_active' => time()
             ];
 
             $timer = intval($expire_after) ?? 1800; //30mins by default
 
             $timmed['timer'] = $timer;
 
-            self::$timed_sessions[] = $timmed;
+            if(self::exists('timed_sessions')){
+                $_SESSION['timed_sessions'][$name] = $timmed;
+            }else{
+
+                $_SESSION['timed_sessions'] = [
+                    $name => $timmed
+                ];
+
+            }
+           
         }
     }
 
     /**
      *Get a session by name
      * @param $name - the name of the session
-     * @return the value of the session
+     * @return - value of the session
      */
     public static function get(string $name){
-        return $_SESSION[$name];
+        return $_SESSION[$name] ?? null;
 
     }
 
