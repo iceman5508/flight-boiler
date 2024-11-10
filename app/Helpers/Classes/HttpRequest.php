@@ -18,6 +18,32 @@ class HttpRequest
     protected array $headers; 
 
     /**
+     * the custom body of the request
+     * @var 
+     */
+    protected $body;
+
+    /**
+     * Tracker if the body is set
+     * @var 
+     */
+    protected $body_set = false;
+
+    /**
+     * set the body must be of type string or array
+     * @param mixed $body
+     * @return bool
+     */
+    public function setBody( $body):bool{
+        if(is_array($body) || is_string($body)){
+            $this->body = $body;
+            $this->body_set = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Add a header
      * @param string $header
      * @return void
@@ -74,10 +100,15 @@ class HttpRequest
         $content = "";
 
         // Add post data to request.
-        foreach($data as $key => $value)
-        {
-            $content .= "{$key}={$value}&";
+        if(!$this->body_set){
+             foreach($data as $key => $value)
+            {
+                $content .= "{$key}={$value}&";
+            }
+        }else{
+            $content = $this->body;
         }
+       
 
         $request_settings = [
             'method' => 'POST',
@@ -114,11 +145,14 @@ class HttpRequest
     {
         $content = "";
 
-        // Add post data to request.
-        foreach($data as $key => $value)
-        {
-            $content .= "{$key}={$value}&";
-        }
+        if(!$this->body_set){
+            foreach($data as $key => $value)
+           {
+               $content .= "{$key}={$value}&";
+           }
+       }else{
+           $content = $this->body;
+       }
 
         $request_settings = [
             'method' => 'PATCH',
@@ -156,10 +190,14 @@ class HttpRequest
         $content = "";
 
         // Add post data to request.
-        foreach($data as $key => $value)
-        {
-            $content .= "{$key}={$value}&";
-        }
+        if(!$this->body_set){
+            foreach($data as $key => $value)
+           {
+               $content .= "{$key}={$value}&";
+           }
+       }else{
+           $content = $this->body;
+       }
 
         $request_settings = [
             'method' => 'PUT',
@@ -197,10 +235,14 @@ class HttpRequest
         $content = "";
 
         // Add post data to request.
-        foreach($data as $key => $value)
-        {
-            $content .= "{$key}={$value}&";
-        }
+        if(!$this->body_set){
+            foreach($data as $key => $value)
+           {
+               $content .= "{$key}={$value}&";
+           }
+       }else{
+           $content = $this->body;
+       }
 
         $request_settings = [
             'method' => 'DELETE',
@@ -233,48 +275,5 @@ class HttpRequest
 
     }
 
-
-    /**
-     * Check if a request or specific request type was made.
-     * By default this is set to post
-     * @param string $type - the request type being made
-     * @return bool
-     */
-    public static function isRequest($type = 'post'){
-        switch($type)
-        {
-            case 'post':
-                return (!empty($_POST)? true: false);
-                break;
-
-            case 'get':
-                return (!empty($_GET)? true: false);
-                break;
-
-            default:
-                return false;
-                break;
-        }
-    }
-
-    /**
-     * Return data from request if it exists
-     * @param $item - the param name of the data
-     * @return string
-     */
-    public static function getRequestData($item){
-        if(isset($_POST[$item]))
-        {
-
-            return $_POST[$item];
-        }
-        else
-            if(isset($_GET[$item]))
-            {
-
-                return $_GET[$item];
-            }
-        return NULL;
-    }
 
 }
