@@ -130,12 +130,15 @@ class Session
      * @return the session to flash
      */
     public static function flash(string $name, $string = ' '){
-        if(self::exists($name)) {
+        if(self::exists($name)&&empty($string)) {
             $session = self::get($name);
             self::delete($name);
             return $session;
         } else {
-            self::set($name , $string);
+            if(!empty($name)){
+                self::set($name , $string);
+            }
+            
         }
     }
 
