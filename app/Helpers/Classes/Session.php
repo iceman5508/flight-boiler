@@ -129,7 +129,7 @@ class Session
      * @param string $string - the value to flash
      * @return the session to flash
      */
-    public static function flash(string $name, $string = ' '){
+    public static function flash(string $name, $string = ''){
         if(self::exists($name)&&empty($string)) {
             $session = self::get($name);
             self::delete($name);
